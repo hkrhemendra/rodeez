@@ -48,6 +48,11 @@ export class User {
     })
     verified: boolean
 
+    @Column({
+        default: false
+    })
+    is_google: boolean
+
     @CreateDateColumn({
         type: "datetime",
     })

@@ -41,6 +41,10 @@ export class UserController {
             user.phone = phone
             user.password = hash.toString()
 
+            if(req.body.is_google){
+                user.is_google = req.body.is_google
+            }
+
             const token = new Token()
             token.user = user
             token.verification_token = await Utils.generateVerificationToken()

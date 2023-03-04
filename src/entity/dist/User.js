@@ -54,6 +54,11 @@ var User = /** @class */ (function () {
         })
     ], User.prototype, "verified");
     __decorate([
+        typeorm_1.Column({
+            "default": false
+        })
+    ], User.prototype, "is_google");
+    __decorate([
         typeorm_1.CreateDateColumn({
             type: "datetime"
         })
