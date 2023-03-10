@@ -41,12 +41,13 @@ var data_source_1 = require("../data-source");
 var Friends_1 = require("../entity/Friends");
 var Message_1 = require("../entity/Message");
 var User_1 = require("../entity/User");
+var SendMessage_1 = require("../utils/SendMessage");
 var MessageController = /** @class */ (function () {
     function MessageController() {
     }
     MessageController.sendMessage = function (req, res, next) {
         return __awaiter(this, void 0, void 0, function () {
-            var receiver_id, message, user, userRepository, messageRepository, sender, receiver, messageObj, error_1;
+            var receiver_id, message, user, userRepository, messageRepository, sender, receiver, socketMessage, messageObj, error_1;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -68,6 +69,12 @@ var MessageController = /** @class */ (function () {
                             })];
                     case 3:
                         receiver = _a.sent();
+                        socketMessage = {
+                            sender: user,
+                            text: message,
+                            recipient: receiver_id
+                        };
+                        SendMessage_1.sendMessage(socketMessage, req.headers.host);
                         messageObj = new Message_1.Messages();
                         messageObj.message_body = message;
                         messageObj.receiver = receiver;

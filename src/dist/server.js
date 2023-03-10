@@ -9,12 +9,14 @@ var AdminRouter_1 = require("./routes/AdminRouter");
 var FriendsRouter_1 = require("./routes/FriendsRouter");
 var MessageRouter_1 = require("./routes/MessageRouter");
 var Server = /** @class */ (function () {
+    // static wss: any  = new WebSocketServer({port: 8080});;
     function Server() {
         this.app = express();
         this.setConfigurations();
         this.setRoutes();
         this.error404Handler();
         this.handleError();
+        // this.initiateSocket();
     }
     Server.prototype.setConfigurations = function () {
         this.connectToMySQL();
@@ -28,7 +30,9 @@ var Server = /** @class */ (function () {
         });
     };
     Server.prototype.configureBodyParser = function () {
-        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(bodyParser.urlencoded({
+            extended: true
+        }));
     };
     Server.prototype.setRoutes = function () {
         this.app.use('/api/user/', UserRouter_1["default"]);

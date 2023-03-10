@@ -2,6 +2,8 @@ import { AppDataSource } from "../data-source"
 import { Group } from "../entity/Friends"
 import { Messages } from "../entity/Message"
 import { User } from "../entity/User"
+import { Message } from "../interface/Message"
+import { sendMessage } from "../utils/SendMessage"
 
 
 export class MessageController{
@@ -22,6 +24,14 @@ export class MessageController{
             const receiver = await userRepository.findOneBy({
                 id: receiver_id
             })
+
+            let socketMessage: Message = {
+                sender: user,
+                text: message,
+                recipient: receiver_id
+            }
+
+            sendMessage(socketMessage, req.headers.host)
 
             const messageObj = new Messages()
             messageObj.message_body = message
