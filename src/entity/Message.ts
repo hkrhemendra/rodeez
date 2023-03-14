@@ -23,10 +23,14 @@ export class Messages{
     })
     message_body: string
 
-    @ManyToOne(()=> User, (user) => user.receiver)
+    @ManyToOne(()=> User, (user) => user.receiver, {
+        nullable: true
+    })
     receiver: User
 
-    @ManyToOne(()=> Group, (group) => group.receiver_id)
+    @ManyToOne(()=> Group, (group) => group.receiver_id, {
+        nullable: true
+    })
     group_receiver: Group
 
     @CreateDateColumn({

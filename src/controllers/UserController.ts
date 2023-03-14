@@ -25,7 +25,6 @@ import {
 export class UserController {
     static async signUp(req, res, next) {
         const firstName = req.body.firstName;
-        const lastName = req.body.lastName;
         const email = req.body.email;
         const phone = req.body.phone;
         const password = req.body.password;
@@ -36,7 +35,6 @@ export class UserController {
 
             const user = new User()
             user.first_name = firstName
-            user.last_name = lastName
             user.email = email
             user.phone = phone
             user.password = hash.toString()
@@ -57,7 +55,8 @@ export class UserController {
             await tokenRepository.save(token)
 
             res.json({
-                token
+                status: 200,
+                data: token
             })
         } catch (e) {
             next(e)
@@ -227,8 +226,7 @@ export class UserController {
 
             res.json({
                 status: 200,
-                user: userInfo,
-                token: token,
+                message: "You have receive email on your register email id. Please check"
             })
             await NodeMailer.sendEmail({
                 to: [email],

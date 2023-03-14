@@ -2,7 +2,7 @@
 import { DataSource } from "typeorm"
 import { Friends, Group, Request } from "./entity/Friends"
 import { Messages } from "./entity/Message"
-import { User, Token } from "./entity/User"
+import { User, Token, Subscribers } from "./entity/User"
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -13,7 +13,7 @@ export const AppDataSource = new DataSource({
     database: "riders",
     synchronize: true,
     logging: false,
-    entities: [User, Token, Messages, Request, Friends, Group],
+    entities: [User, Token, Messages, Request, Friends, Group, Subscribers],
     migrations: [],
     subscribers: [],
 })

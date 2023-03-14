@@ -14,9 +14,6 @@ export class User {
     @Column()
     first_name: string
 
-    @Column()
-    last_name: string
-
     @Column({
         nullable: true
     })
@@ -93,6 +90,38 @@ export class User {
     @OneToMany(() => Friends, (friends) => friends.friends, {cascade:true})
     friendsId: Request[]
     
+}
+
+@Entity()
+export class Subscribers {
+    @PrimaryGeneratedColumn()
+    id: number
+
+    @Column({
+        default: false
+    })
+    subscribed: boolean
+
+    @Column({
+        type: "datetime",
+        nullable: true
+    })
+    end_at: Date
+
+    @CreateDateColumn({
+        type: "datetime",
+    })
+    created_at: Date
+
+    @UpdateDateColumn({
+        type: "datetime",
+    })
+    updated_at: Date
+
+    // Users One to One
+    @OneToOne(() => User)
+    @JoinColumn()
+    user: User
 }
 
 @Entity()

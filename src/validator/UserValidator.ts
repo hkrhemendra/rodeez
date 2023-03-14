@@ -13,12 +13,10 @@ export class UserValidators {
         const usersRepository = AppDataSource.getRepository(User)
         return [
             body('firstName', 'First Name required').isString(),
-            body('lastName', 'First Name required').isString(),
             body('email', 'Email is required').isEmail().custom(async (email, {req})=>{
                 return await usersRepository.findOneBy({
                     email: email
                 }).then((user)=>{
-                    console.log(user)
                     if(user){
                         req.errorStatus = 422;
                         throw new Error('Email already exist')
