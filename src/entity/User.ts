@@ -3,6 +3,7 @@ import {Relation, PrimaryGeneratedColumn, Entity, OneToOne, JoinColumn, Column, 
 import { Messages } from "./Message"
 import { Friends, Group, Request } from "./Friends"
 import { request } from "http"
+import { Plan } from "./Plans"
 
 
 @Entity()
@@ -89,6 +90,13 @@ export class User {
 
     @OneToMany(() => Friends, (friends) => friends.friends, {cascade:true})
     friendsId: Request[]
+
+    // Plan
+    @ManyToOne(() => Plan, (plan) => plan.users)
+    plan: Plan
+
+    @ManyToOne(() => Plan, (plan) => plan.admin)
+    plan_admin: Plan
     
 }
 

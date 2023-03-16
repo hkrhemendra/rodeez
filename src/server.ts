@@ -9,6 +9,8 @@ import AdminRouter from './routes/AdminRouter';
 import FriendRouter from './routes/FriendsRouter';
 import MessageRouter from './routes/MessageRouter';
 import { WebSocketServer } from 'ws';
+import PlanRouter from './routes/PlanRouter';
+import FileRouter from './routes/FileRouter';
 
 export class Server {
     public app: express.Application = express();
@@ -42,10 +44,14 @@ export class Server {
     }
 
     setRoutes() {
-        this.app.use('/api/user/', UserRouter)
-        this.app.use('/api/admin/', AdminRouter)
-        this.app.use('/api/friends/', FriendRouter)
-        this.app.use('/api/messages/', MessageRouter)
+        this.app.use('/ftp',express.static('static/images'));
+        this.app.use('/ftp',express.static('static/docs'));
+        this.app.use('/api/user/', UserRouter);
+        this.app.use('/api/admin/', AdminRouter);
+        this.app.use('/api/friends/', FriendRouter);
+        this.app.use('/api/messages/', MessageRouter);
+        this.app.use('/api/plan/', PlanRouter);
+        this.app.use('/api/file/', FileRouter);
     }
 
     error404Handler() {
@@ -67,23 +73,4 @@ export class Server {
         })
     }
 
-    // initiateSocket() {
-    //     io.on('connection', (socket) => {
-    //         console.log('a user connected');
-
-    //         socket.on('new message', (message) => {
-    //             console.log('received message:', message);
-    //             const recipientSocket = io.sockets.connected[message.recipient];
-    //             console.log("Recipient Socket --------> ",recipientSocket)
-
-    //             if (recipientSocket) {
-    //                 recipientSocket.emit('message', message);
-    //             }
-    //         });
-
-    //         socket.on('disconnect', () => {
-    //             console.log('user disconnected');
-    //         });
-    //     })
-    // }
 }

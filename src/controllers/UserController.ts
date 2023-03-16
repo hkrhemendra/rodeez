@@ -87,7 +87,8 @@ export class UserController {
 
             const data = {
                 status: 200,
-                token: token
+                token: token,
+                data: user
             }
 
             res.json(data)

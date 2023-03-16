@@ -3,6 +3,8 @@ import * as Bcrypt from 'bcrypt';
 import { resolve } from 'path';
 import { AppDataSource } from '../data-source';
 import { User } from '../entity/User';
+import * as multer from 'multer';
+import * as fs from 'fs';
 
 export class Utils {
 
@@ -66,6 +68,46 @@ export class Utils {
             return false
         }
        
+    }
+
+    static uploader(file: any, fileType: string) {
+        const storage = multer.diskStorage({
+            destination: (req, file, cb) => {
+                let directory: string;
+                if(fileType === 'docs'){
+                    directory = `${process.cwd()}/static/docs`;
+                }else{
+                    directory = `${process.cwd()}/static/images`;
+                }
+                cb(null, directory)
+            },
+            filename: (req, file, cb) => {
+                let fileName:string = `${Date.now()}.${file.originalname.split('.').pop()}`;
+                fileName = fileName.replace(' ','_')
+                console.log('File Name ------------> ', fileName)
+                const fileExtension = file.originalname.split('.').pop()
+                console.log('File extension ------> ', fileExtension)
+                if(fileType === 'docs'){
+                    const fileExtensionArray = ['pdf', 'docx', 'doc']
+                    if(fileExtensionArray.includes(fileExtension)){
+                        cb(null, fileName)
+                    }else {
+                        cb(new Error("Invalid file type"), fileName);
+                    }
+                }else{
+                    const fileExtensionArray = ['png', 'jpeg', 'jpg']
+                    if(fileExtensionArray.includes(fileExtension)){
+                        cb(null, fileName)
+                    }else {
+                        cb(new Error("Invalid file type"), fileName);
+                    }
+                }
+            }
+        })
+
+        const upload = multer({storage})
+
+        return upload.single(file)
     }
 
 }
