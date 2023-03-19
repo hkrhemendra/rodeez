@@ -10,7 +10,7 @@ export class Utils {
 
     public MAX_TOKEN_TIME = 60000;
 
-    static generateVerificationToken(size: number = 5) {
+    static generateVerificationToken(size: number = 4) {
         let digits = '0123456789';
         let otp = '';
 

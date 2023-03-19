@@ -144,6 +144,17 @@ export class Token{
     @Column({
         nullable: true
     })
+    otp: number
+
+    @Column({
+        type: "datetime",
+        nullable: true
+    })
+    otp_time: Date
+
+    @Column({
+        nullable: true
+    })
     verification_token: number
 
     @Column({

@@ -69,6 +69,25 @@ export class UserValidators {
     ]
     }
 
+    static sendOtp(){
+        const usersRepository = AppDataSource.getRepository(User)
+        return [
+            query('phone','Phone number is required')
+                .custom(async(login_id, {req}) => {
+                    return await usersRepository.find({
+                        where:[{phone: login_id}] }).then(user => {
+                        if(user){
+                            req.user = user[0];
+                            return true
+                        }else {
+                            req.errorStatus = 422
+                            throw new Error('User Does Not Exist')
+                        }
+                    })
+                }),
+        ]
+    }
+
 
     static verifyUser(){
         return [
@@ -93,6 +112,29 @@ export class UserValidators {
                             return true
                         }else{
                             return new Error('Token Does not exist. Please Request for a new One')
+                        }
+                    })
+                })
+        ]
+    }
+
+    static verifyOtp(){
+        const userRepository = AppDataSource.getRepository(User)
+        const tokenRepository = AppDataSource.getRepository(Token)
+        
+        return [
+            query('otp', 'Otp is required')
+                .isNumeric().custom(async(otp, {req})=> {
+                    const mainUser = await userRepository.findOneBy({
+                        phone: req.body.phone
+                    })
+                    return await tokenRepository.find({
+                        where: { user: {id: mainUser.id}}
+                    }).then((mainToken) => {
+                        if(mainToken[0].otp == otp && Date.now() < mainToken[0].otp_time.getTime()){
+                            return true
+                        }else{
+                            return new Error('Otp Does not exist. Please Request for a new One')
                         }
                     })
                 })

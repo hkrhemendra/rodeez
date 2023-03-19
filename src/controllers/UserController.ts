@@ -223,11 +223,9 @@ export class UserController {
                 token[0].reset_password_token_time = new Date(Date.now() + new Utils().MAX_TOKEN_TIME)
             await tokenRepository.save(token)
 
-            console.log(token)
-
             res.json({
                 status: 200,
-                message: "You have receive email on your register email id. Please check"
+                data: token
             })
             await NodeMailer.sendEmail({
                 to: [email],
@@ -308,6 +306,76 @@ export class UserController {
         } catch (e) {
             next(e)
         }
+    }
+
+    static async sendOtp( req, res, next){
+
+        const phone = req.query.phone;
+        const resetPasswordToken = Utils.generateVerificationToken();
+
+        const userRepository = AppDataSource.getRepository(User)
+        const tokenRepository = AppDataSource.getRepository(Token)
+        try {
+            const userInfo = await userRepository.findOneBy({
+                phone: phone
+            });
+
+            const token = await tokenRepository.find({
+                where: {
+                    user: {
+                        id: userInfo.id
+                    }
+                }
+            })
+
+            token[0].otp = resetPasswordToken,
+                token[0].otp_time = new Date(Date.now() + new Utils().MAX_TOKEN_TIME)
+            await tokenRepository.save(token)
+
+            res.json({
+                status: 200,
+                data: token
+            })
+
+        } catch (e) {
+            next(e)
+        }
+
+    }
+
+    static async verifyOtp(req, res, next) {
+
+        const phone: string = req.query.phone ;
+        const userRepository = AppDataSource.getRepository(User);
+
+        try {
+
+            const user = await userRepository.findOneBy({
+                phone: phone
+            })
+
+            const token = jwt.sign({
+                    email: user.email,
+                    phone: user.phone,
+                    user_id: user.id
+                },
+                getEnvironmentVariables().jwt_secret, {
+                    expiresIn: '120d'
+                }
+            );
+
+            const data = {
+                status: 200,
+                token: token,
+                data: user
+            }
+
+            res.json(data)
+
+        } catch (error) {
+            next(error)
+        }
+
     }
 
 
