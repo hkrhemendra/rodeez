@@ -49,6 +49,15 @@ export class UserValidators {
         ]
     }
 
+    static googleSingUp(){
+        return [
+            body('firstName', 'First Name required').isString(),
+            body('email', 'Email is required').isEmail(),
+            body('phone', "Phone number required")
+                .isLength({min: 10, max: 12}),
+        ]
+    }
+
     static login(){
         const usersRepository = AppDataSource.getRepository(User)
         return [
@@ -181,20 +190,10 @@ export class UserValidators {
                     }
                 }),
             body('confirm_password', 'Confirm Password is Required'),
-            body('reset_password_token', 'Reset password Token missing').isNumeric()
-                .custom((token, {req}) => {
-                    if(req.user.reset_password_token == Number(token)){
-                        return true
-                    }else{
-                        req.errorStatus = 422;
-                        throw new Error('Reset Password Token is Invalid. Please Try Again')
-                    }
-                })
         ]
     }
 
     static updatePassword(){
-        const userRepository = AppDataSource.getRepository(User);
         return [
             body('password', 'Password is Required')
                 .isAlphanumeric(),

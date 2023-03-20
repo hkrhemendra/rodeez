@@ -33,7 +33,9 @@ export class User {
     })
     phone: string
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     password: string
 
     @Column({

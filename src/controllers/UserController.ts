@@ -10,9 +10,6 @@ import {
 } from "../utils/Utils";
 import * as jwt from 'jsonwebtoken';
 import {
-    getEnvironmentData
-} from "worker_threads";
-import {
     getEnvironmentVariables
 } from "../environments/env";
 import {
@@ -39,7 +36,7 @@ export class UserController {
             user.phone = phone
             user.password = hash.toString()
 
-            if(req.body.is_google){
+            if (req.body.is_google) {
                 user.is_google = req.body.is_google
             }
 
@@ -63,8 +60,63 @@ export class UserController {
         }
     }
 
+    static async googleSignUp(req, res, next) {
+        const firstName = req.body.firstName;
+        const email = req.body.email;
+        const phone = req.body.phone;
+        const avatar = req.body.avatar;
+        const userRepository = AppDataSource.getRepository(User);
+
+        try {
+
+            const testUser = await userRepository.findOneBy({
+                email: email
+            })
+
+            if(testUser){
+
+                if(!testUser.is_google){
+                    return res.json({
+                        status: 422,
+                        message: 'You email is already without google Oauth'
+                    })
+                }
+
+                let token = Utils.generateToken(testUser)
+
+                return res.json({
+                    status: 200,
+                    token: token,
+                    data: testUser
+                })
+            }
+
+            const user = new User()
+            user.first_name = firstName
+            user.email = email
+            user.phone = phone
+            user.is_google = true
+            user.avatar = avatar
+            user.verified = true
+
+
+            await userRepository.save(user)
+
+            const token = Utils.generateToken(user)
+
+
+            return res.json({
+                status: 200,
+                token: token,
+                data: user
+            })
+        } catch (e) {
+            next(e)
+        }
+    }
+
     static async login(req, res, next) {
-        const login_id: string = req.query.login_id ;
+        const login_id: string = req.query.login_id;
 
         const password = req.query.password;
 
@@ -239,7 +291,7 @@ export class UserController {
 
 
     static async resetPassword(req, res, next) {
-        const user = req.user;
+        const email = req.body.email;
         const newPassword = req.body.new_password;
 
         const userRepository = AppDataSource.getRepository(User)
@@ -247,7 +299,7 @@ export class UserController {
         try {
             const encryptedPassword = await Utils.encryptPassword(newPassword);
             const updatedUser = await userRepository.findOneBy({
-                id: user.user_id
+                email: email
             });
 
             updatedUser.password = encryptedPassword.toString()
@@ -276,39 +328,39 @@ export class UserController {
             await userRepository.findOneBy({
                 id: user_id
             }).then(async (user: any) => {
-                const isCorrectPassword:boolean = await Utils.comparePassword({
+                const isCorrectPassword: boolean = await Utils.comparePassword({
                     plainPassword: password,
                     encryptPassword: user.password
                 });
 
-                if(isCorrectPassword === true){
+                if (isCorrectPassword === true) {
                     const encryptedPassword = await Utils.encryptPassword(newPassword);
-                    const newUser =await userRepository.findOneBy({
+                    const newUser = await userRepository.findOneBy({
                         id: user_id
                     })
-    
+
                     newUser.password = encryptedPassword.toString();
                     await userRepository.save(newUser);
-    
+
                     res.json({
                         status: 200,
                         message: "Password updated successfully",
                         user: newUser
                     });
-                }else{
+                } else {
                     res.json({
                         status: 422,
                         message: "Please Enter Correct Password"
                     })
                 }
-                
+
             })
         } catch (e) {
             next(e)
         }
     }
 
-    static async sendOtp( req, res, next){
+    static async sendOtp(req, res, next) {
 
         const phone = req.query.phone;
         const resetPasswordToken = Utils.generateVerificationToken();
@@ -345,7 +397,7 @@ export class UserController {
 
     static async verifyOtp(req, res, next) {
 
-        const phone: string = req.query.phone ;
+        const phone: string = req.query.phone;
         const userRepository = AppDataSource.getRepository(User);
 
         try {
