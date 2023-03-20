@@ -5,12 +5,14 @@ import { AppDataSource } from '../data-source';
 import { User } from '../entity/User';
 import * as multer from 'multer';
 import * as fs from 'fs';
+import * as jwt from 'jsonwebtoken'
+import { getEnvironmentVariables } from '../environments/env';
 
 export class Utils {
 
     public MAX_TOKEN_TIME = 60000;
 
-    static generateVerificationToken(size: number = 5) {
+    static generateVerificationToken(size: number = 4) {
         let digits = '0123456789';
         let otp = '';
 
@@ -68,6 +70,19 @@ export class Utils {
             return false
         }
        
+    }
+
+    static generateToken(user: any){
+        const token = jwt.sign({
+            email: user.email,
+            phone: user.phone,
+            user_id: user.id
+        },
+        getEnvironmentVariables().jwt_secret, {
+            expiresIn: '120d'
+        });
+
+        return token
     }
 
     static uploader(file: any, fileType: string) {

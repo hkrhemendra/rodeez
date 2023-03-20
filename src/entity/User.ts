@@ -33,7 +33,9 @@ export class User {
     })
     phone: string
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     password: string
 
     @Column({
@@ -140,6 +142,17 @@ export class Token{
     @OneToOne(()=> User, (user)=> user.metadata)
     @JoinColumn()
     user: Relation<User>
+
+    @Column({
+        nullable: true
+    })
+    otp: number
+
+    @Column({
+        type: "datetime",
+        nullable: true
+    })
+    otp_time: Date
 
     @Column({
         nullable: true

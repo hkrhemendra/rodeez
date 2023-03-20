@@ -49,6 +49,15 @@ export class UserValidators {
         ]
     }
 
+    static googleSingUp(){
+        return [
+            body('firstName', 'First Name required').isString(),
+            body('email', 'Email is required').isEmail(),
+            body('phone', "Phone number required")
+                .isLength({min: 10, max: 12}),
+        ]
+    }
+
     static login(){
         const usersRepository = AppDataSource.getRepository(User)
         return [
@@ -67,6 +76,25 @@ export class UserValidators {
                 }),
             query('password', 'Password is required').isAlphanumeric()
     ]
+    }
+
+    static sendOtp(){
+        const usersRepository = AppDataSource.getRepository(User)
+        return [
+            query('phone','Phone number is required')
+                .custom(async(login_id, {req}) => {
+                    return await usersRepository.find({
+                        where:[{phone: login_id}] }).then(user => {
+                        if(user){
+                            req.user = user[0];
+                            return true
+                        }else {
+                            req.errorStatus = 422
+                            throw new Error('User Does Not Exist')
+                        }
+                    })
+                }),
+        ]
     }
 
 
@@ -93,6 +121,29 @@ export class UserValidators {
                             return true
                         }else{
                             return new Error('Token Does not exist. Please Request for a new One')
+                        }
+                    })
+                })
+        ]
+    }
+
+    static verifyOtp(){
+        const userRepository = AppDataSource.getRepository(User)
+        const tokenRepository = AppDataSource.getRepository(Token)
+        
+        return [
+            query('otp', 'Otp is required')
+                .isNumeric().custom(async(otp, {req})=> {
+                    const mainUser = await userRepository.findOneBy({
+                        phone: req.body.phone
+                    })
+                    return await tokenRepository.find({
+                        where: { user: {id: mainUser.id}}
+                    }).then((mainToken) => {
+                        if(mainToken[0].otp == otp && Date.now() < mainToken[0].otp_time.getTime()){
+                            return true
+                        }else{
+                            return new Error('Otp Does not exist. Please Request for a new One')
                         }
                     })
                 })
@@ -139,20 +190,10 @@ export class UserValidators {
                     }
                 }),
             body('confirm_password', 'Confirm Password is Required'),
-            body('reset_password_token', 'Reset password Token missing').isNumeric()
-                .custom((token, {req}) => {
-                    if(req.user.reset_password_token == Number(token)){
-                        return true
-                    }else{
-                        req.errorStatus = 422;
-                        throw new Error('Reset Password Token is Invalid. Please Try Again')
-                    }
-                })
         ]
     }
 
     static updatePassword(){
-        const userRepository = AppDataSource.getRepository(User);
         return [
             body('password', 'Password is Required')
                 .isAlphanumeric(),
