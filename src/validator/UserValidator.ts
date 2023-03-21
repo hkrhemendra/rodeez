@@ -49,12 +49,28 @@ export class UserValidators {
         ]
     }
 
-    static googleSingUp(){
+    static googleSignUp(){
+        const userRepository = AppDataSource.getRepository(User)
         return [
             body('firstName', 'First Name required').isString(),
-            body('email', 'Email is required').isEmail(),
-            body('phone', "Phone number required")
-                .isLength({min: 10, max: 12}),
+            body('email', 'Email is required').isEmail()
+                .custom(async(email, {req})=> {
+                    return await userRepository.findOneBy({
+                        email: email
+                    }).then((user)=> {
+                        if(user){
+                            if(!user.is_google ){
+                                return new Error("you are already registered")
+                            }else{
+                                return false
+                            }
+                        }else {
+                            return true
+                        }
+                        
+                    })
+
+                }),
         ]
     }
 

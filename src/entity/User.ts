@@ -29,7 +29,8 @@ export class User {
     email: string
 
     @Column({
-        unique: true
+        unique: true,
+        nullable: true,
     })
     phone: string
 

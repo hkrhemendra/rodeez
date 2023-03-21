@@ -27,7 +27,7 @@ export class UserRouter {
 
     postRoutes() {
         this.router.post('/signup', UserValidators.singUp(), GlobalMiddleware.checkError, UserController.signUp)
-        this.router.post('/google/signup', UserValidators.googleSingUp(), GlobalMiddleware.checkError, UserController.googleSignUp);
+        this.router.post('/google/signup', UserValidators.googleSignUp(), GlobalMiddleware.checkError, UserController.googleSignUp);
     }
 
     patchRoutes() {

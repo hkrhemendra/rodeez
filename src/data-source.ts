@@ -12,6 +12,9 @@ export const AppDataSource = new DataSource({
     username: "riders",
     password: "zGRHCAJWwVoc7r3KrGAq",
     database: "riders",
+    // username: "root",
+    // password: "",
+    // database: "riders",
     synchronize: true,
     logging: false,
     entities: [

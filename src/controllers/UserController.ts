@@ -63,7 +63,7 @@ export class UserController {
     static async googleSignUp(req, res, next) {
         const firstName = req.body.firstName;
         const email = req.body.email;
-        const phone = req.body.phone;
+        let phone = req.body.phone;
         const avatar = req.body.avatar;
         const userRepository = AppDataSource.getRepository(User);
 
@@ -73,14 +73,11 @@ export class UserController {
                 email: email
             })
 
-            if(testUser){
+            // if(!phone){
+            //     phone = null;
+            // }
 
-                if(!testUser.is_google){
-                    return res.json({
-                        status: 422,
-                        message: 'You email is already without google Oauth'
-                    })
-                }
+            if(testUser){
 
                 let token = Utils.generateToken(testUser)
 
@@ -381,7 +378,7 @@ export class UserController {
             })
 
             token[0].otp = resetPasswordToken,
-                token[0].otp_time = new Date(Date.now() + new Utils().MAX_TOKEN_TIME)
+            token[0].otp_time = new Date(Date.now() + new Utils().MAX_TOKEN_TIME)
             await tokenRepository.save(token)
 
             res.json({
