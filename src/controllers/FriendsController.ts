@@ -189,18 +189,17 @@ export class FriendsController {
                 id: user_id
             })
 
-            const users = await groupRepository.find({
-                relations: {
-                    users: true
-                }
-              })
+            let users = await userRepository
+            .createQueryBuilder("user")
+            .leftJoinAndSelect("user.group", "group")
+            .where("user.id = :user_id", { user_id })
+            .getMany();
           
 
-            console.log(users)
 
             res.json({
                 status: 200,
-                data: {users}
+                data: users
             })
 
         }catch(error){
@@ -236,6 +235,8 @@ export class FriendsController {
                     })
                 }
             }))
+
+            groupUserArray.push(mainUser)
 
             const updateGroup = await groupRepository.findOneBy({
                 id: groupId
