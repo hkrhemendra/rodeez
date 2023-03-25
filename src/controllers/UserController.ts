@@ -147,6 +147,25 @@ export class UserController {
         }
     }
 
+    static async getAllUsers(req, res, next){
+
+        let userRepository = AppDataSource.getRepository(User);
+
+        try {
+            
+            const allUsers = await userRepository.find()
+
+            return res.json({
+                status: 200,
+                data: allUsers
+            })
+
+        } catch (error) {
+            
+        }
+
+    }
+
     static async resendVerificationEmail(req, res, next) {
         const email = req.query.email;
         const verificationToken = Utils.generateVerificationToken();
