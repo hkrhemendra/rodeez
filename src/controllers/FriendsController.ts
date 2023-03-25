@@ -1,4 +1,5 @@
 import { json } from "body-parser";
+import { getRepository } from "typeorm";
 import {
     AppDataSource
 } from "../data-source";
@@ -184,12 +185,18 @@ export class FriendsController {
             const userRepository = AppDataSource.getRepository(User)
             const groupRepository = AppDataSource.getRepository(Group)
 
-            const users = await userRepository.find({
-                where: {
-                    id: user_id
-                },
-                relations: ["group"]
+            const user = await userRepository.findOneBy({
+                id: user_id
             })
+
+            const users = await groupRepository.find({
+                relations: {
+                    users: true
+                }
+              })
+          
+
+            console.log(users)
 
             res.json({
                 status: 200,
