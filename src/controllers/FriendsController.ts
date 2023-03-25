@@ -148,7 +148,7 @@ export class FriendsController {
         const user = req.user
         let members = req.body.members
         const name = req.body.name
-        members = JSON.parse(members)
+
         try {  
             console.log(members)
             const userRepository = AppDataSource.getRepository(User)
@@ -158,19 +158,9 @@ export class FriendsController {
                 id: user.user_id
             })
 
-            const groupUserArray = await Promise.all(members.map(async(element:number) => {
-                return await userRepository.findOneBy({
-                    id: element
-                })
-            }))
-
-            groupUserArray.push(mainUser)
-
-            console.log(groupUserArray)
             let group = new Group()
             group.admin_id = mainUser
             group.is_active = true
-            group.users = groupUserArray
             group.name = name
 
             await groupRepository.save(group)
@@ -203,7 +193,7 @@ export class FriendsController {
 
             res.json({
                 status: 200,
-                data: users
+                data: {users}
             })
 
         }catch(error){
@@ -211,6 +201,52 @@ export class FriendsController {
             req.errorStatus = 422
             next(error)
         }
+    }
+
+    static async addMembers(req, res, next) {
+
+        let members = req.body.members
+        let groupId = req.body.group_id
+        let user = req.user
+        try {
+            const userRepository = AppDataSource.getRepository(User);
+            const groupRepository = AppDataSource.getRepository(Group);
+
+            const mainUser = await userRepository.findOneBy({
+                id: user.user_id
+            });
+
+            members = JSON.parse(members);
+            let groupUserArray = [];
+            groupUserArray = await Promise.all(members.map(async(element:number) => {
+
+                const users = await userRepository.findOneBy({
+                    id: element
+                })
+                if(user){
+                    return await userRepository.findOneBy({
+                        id: element
+                    })
+                }
+            }))
+
+            const updateGroup = await groupRepository.findOneBy({
+                id: groupId
+            });
+
+            updateGroup.users = [...groupUserArray]
+            await groupRepository.save(updateGroup)
+            
+            return res.json({
+                status: 200,
+                data: updateGroup
+            })
+
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+
     }
 
 }

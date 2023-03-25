@@ -286,6 +286,40 @@ export class UserController {
         }
     }
 
+    static async sendResetPasswordMessage(req, res, next){
+        const phone = req.query.phone;
+        console.log(phone)
+        const resetPasswordToken = Utils.generateVerificationToken();
+
+        const userRepository = AppDataSource.getRepository(User)
+        const tokenRepository = AppDataSource.getRepository(Token)
+        try {
+            const userInfo = await userRepository.findOneBy({
+                phone: phone
+            });
+
+            const token = await tokenRepository.find({
+                where: {
+                    user: {
+                        id: userInfo.id
+                    }
+                }
+            })
+
+            token[0].reset_password_token = resetPasswordToken,
+                token[0].reset_password_token_time = new Date(Date.now() + new Utils().MAX_TOKEN_TIME)
+            await tokenRepository.save(token)
+
+            res.json({
+                status: 200,
+                data: token
+            })
+
+        } catch (e) {
+            next(e)
+        }
+    }
+
 
     static async resetPassword(req, res, next) {
         const email = req.body.email;

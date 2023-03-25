@@ -22,6 +22,7 @@ export class UserRouter {
         this.router.get('/login/send/otp', UserValidators.sendOtp(), GlobalMiddleware.checkError, UserController.sendOtp)
         this.router.get('/login/verify/otp', UserValidators.verifyOtp(), GlobalMiddleware.checkError, UserController.verifyOtp)
         this.router.get('/reset/password', UserValidators.sendResetPasswordEmail(), GlobalMiddleware.checkError, UserController.sendResetPasswordEmail)
+        this.router.get('/reset/password/phone', UserValidators.sendResetPasswordMessage(), GlobalMiddleware.checkError, UserController.sendResetPasswordMessage)
         this.router.get('/verify/resetPasswordToken', UserValidators.verifyResetPasswordToken(), GlobalMiddleware.checkError, UserController.verifyResetPasswordToken)
     }
 

@@ -45,6 +45,8 @@ export class FriendsRouter {
             GlobalMiddleware.authenticate, 
             FriendsController.acceptInvite
         )
+        this.router.patch('/add/group/members', FriendsValidator.addMembers(), GlobalMiddleware.checkError, GlobalMiddleware.authenticate, FriendsController.addMembers);
+
     }
 
     deleteRoutes() {}

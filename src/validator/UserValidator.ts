@@ -181,6 +181,23 @@ export class UserValidators {
         ]
     }
 
+    static sendResetPasswordMessage(){
+        const userRepository = AppDataSource.getRepository(User)
+        return [
+
+            query('phone').isNumeric().custom((phone, {req})=> {
+                return    userRepository.findOneBy({phone:phone}).then((user)=> {
+                    if(user){
+                        return true;
+                    }else{
+                        throw new Error('Phone does not exist')
+                    }
+                })
+            })
+
+        ]
+    }
+
     static resetPassword(){
         const userRepository = AppDataSource.getRepository(User)
         return [
