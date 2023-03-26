@@ -1,4 +1,5 @@
 import { json } from "body-parser";
+import { group } from "console";
 import { getRepository } from "typeorm";
 import {
     AppDataSource
@@ -163,6 +164,7 @@ export class FriendsController {
             group.admin_id = mainUser
             group.is_active = true
             group.name = name
+            group.users = [mainUser]
 
             await groupRepository.save(group)
 
@@ -189,13 +191,17 @@ export class FriendsController {
                 id: user_id
             })
 
-            let users = await userRepository
-            .createQueryBuilder("user")
-            .leftJoinAndSelect("user.group", "group")
-            .where("user.id = :user_id", { user_id })
-            .getMany();
-          
+            // let users = await userRepository
+            // .createQueryBuilder("user")
+            // .leftJoinAndSelect("user.group", "group")
+            // .where("user.id = :user_id", { user_id })
+            // .getMany();
 
+            let users = await userRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.group', 'group')
+            .where('user.id = :id', { id: user_id })
+            .getMany();
 
             res.json({
                 status: 200,
