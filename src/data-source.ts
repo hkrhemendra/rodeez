@@ -1,9 +1,5 @@
-
 import { DataSource } from "typeorm"
-import { Friends, Group, Request } from "./entity/Friends"
-import { Messages } from "./entity/Message"
-import { Event, Plan, Task } from "./entity/Plans"
-import { User, Token, Subscribers } from "./entity/User"
+
 
 export const AppDataSource = new DataSource({
     type: "mysql",

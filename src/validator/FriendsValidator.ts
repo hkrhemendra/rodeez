@@ -87,6 +87,21 @@ export class FriendsValidator{
                 })
         ]
     }
+
+    static checkContactList(){
+        return [
+
+            query('contact_list', "Please enter valid contact list").isArray()
+
+        ]
+    }
+
+    static inviteToApp(){
+        return [
+            query('phone', "Please provide valid phone number")
+                .isNumeric()
+        ]
+    }
    
 
 }

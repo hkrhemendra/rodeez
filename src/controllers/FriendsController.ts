@@ -263,4 +263,64 @@ export class FriendsController {
 
     }
 
+    static async checkContactList(req, res, next) {
+
+        let contactList  = req.query.contact_list;
+
+        try {
+            contactList = JSON.parse(contactList[0])
+
+            let userRepository = AppDataSource.getRepository(User);
+            let dataObject = []
+            await Promise.all(contactList.map(async (ele) => {
+                let user = await userRepository.findOneBy({
+                    phone: ele.phone
+                })
+                if(user){
+                    dataObject.push({
+                        contact_data: ele,
+                        isUser: true
+                    })
+                }else{
+                    dataObject.push({
+                        contact_data: ele,
+                        isUser: false
+                    })
+                }
+            }))
+
+            console.log(dataObject)
+
+            return res.json({
+                status: 200,
+                data: dataObject
+            })
+        
+        } catch (error) {
+            console.log(error)
+            next(error)
+        }
+
+    }
+
+    static inviteToApp(req, res, next)  {
+
+        let phone = req.query.phone;
+
+        try {
+            
+            res.json({
+                status: 200,
+                message: "Invite send successfully"
+            })
+
+        } catch (error) {
+            
+            console.log(error)
+            next(error)
+
+        }
+
+    }
+
 }
