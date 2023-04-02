@@ -21,7 +21,7 @@ export class PlanRouter {
      postRoutes() {
         this.router.post('/create/plan', PlanValidator.createPlan(), GlobalMiddleware.checkError, GlobalMiddleware.authenticate ,PlanController.createPlan)
         this.router.post('/create/task', PlanValidator.createTask(), GlobalMiddleware.checkError, GlobalMiddleware.authenticate, PlanController.createTask)
-        // this.router.post('/create/event', PlanValidator.createEvent(), GlobalMiddleware.checkError, GlobalMiddleware.authenticate, PlanController.createEvent)
+        this.router.post('/create/event', PlanValidator.createEvent(), GlobalMiddleware.checkError, GlobalMiddleware.authenticate, PlanController.createEvent)
     }
 
     patchRoutes() {

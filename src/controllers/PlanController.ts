@@ -5,7 +5,7 @@ import {
     User
 } from "../entity/User";
 
-import { Plan, Task } from "../entity/Plans";
+import { Plan, Task, Event } from "../entity/Plans";
 
 
 
@@ -91,6 +91,56 @@ export class PlanController {
             return res.json({
                 status: 200,
                 data: task
+            })
+
+        } catch (error) {
+            
+            console.log(error)
+            return res.json({
+                status: 422,
+                message: error
+            })
+
+        }
+
+    }
+
+    static async createEvent(req, res, next){
+
+        const planId = req.body.plan_id
+        const date = req.body.date
+        const start_time = req.body.start_time
+        const end_time = req.body.end_time
+        const description = req.body.description
+
+        const attachment = req.body.attachment
+
+        const planRepository = AppDataSource.getRepository(Plan)
+        const eventRepository = AppDataSource.getRepository(Event)
+
+        try {
+            
+            const mainPlan = await planRepository.findOneBy({
+                id: planId
+            })
+
+            const event = new Event()
+            event.description = description;
+            event.event_date = date;
+            event.start_time = start_time
+            event.end_time = end_time
+            
+            if(attachment){
+                event.attachment = attachment
+            }
+
+            event.plan = mainPlan
+
+            await eventRepository.save(event)
+
+            return res.json({
+                status: 200,
+                data: event
             })
 
         } catch (error) {
