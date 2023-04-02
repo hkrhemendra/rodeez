@@ -19,7 +19,6 @@ export class FriendsRouter {
     getRoutes() {
         this.router.get('/list/friends',GlobalMiddleware.checkError, GlobalMiddleware.authenticate, FriendsController.listFriends)
         this.router.get('/list/group', GlobalMiddleware.checkError, GlobalMiddleware.authenticate, FriendsController.listGroups);
-        this.router.get('/check/contacts',FriendsValidator.checkContactList() ,GlobalMiddleware.checkError, GlobalMiddleware.authenticate, FriendsController.checkContactList)
         this.router.get('/invite/to/app',FriendsValidator.inviteToApp() ,GlobalMiddleware.checkError, GlobalMiddleware.authenticate, FriendsController.inviteToApp)
     }
 
@@ -38,6 +37,8 @@ export class FriendsRouter {
             GlobalMiddleware.authenticate,
             FriendsController.createGroup
         )
+        this.router.post('/check/contacts',FriendsValidator.checkContactList() ,GlobalMiddleware.checkError, GlobalMiddleware.authenticate, FriendsController.checkContactList)
+
     }
 
     patchRoutes() {
