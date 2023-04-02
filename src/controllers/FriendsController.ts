@@ -279,7 +279,8 @@ export class FriendsController {
                 if(user){
                     dataObject.push({
                         contact_data: ele,
-                        isUser: true
+                        isUser: true,
+                        user_id: user.id
                     })
                 }else{
                     dataObject.push({
