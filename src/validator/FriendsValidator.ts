@@ -91,7 +91,7 @@ export class FriendsValidator{
     static checkContactList(){
         return [
 
-            query('contact_list', "Please enter valid contact list").isArray()
+            body('contact_list', "Please enter valid contact list").isArray()
 
         ]
     }

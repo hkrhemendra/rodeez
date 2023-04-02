@@ -265,7 +265,7 @@ export class FriendsController {
 
     static async checkContactList(req, res, next) {
 
-        let contactList  = req.query.contact_list;
+        let contactList  = req.body.contact_list;
 
         try {
             contactList = JSON.parse(contactList[0])
