@@ -324,4 +324,29 @@ export class FriendsController {
 
     }
 
+    static async listGroupMembers(req, res, next) {
+        let groupId = req.query.group_id;
+
+        try {
+            
+            let userRepository = AppDataSource.getRepository(User);
+
+            let users = await userRepository.find({
+                where: {
+                    group: {
+                        id: groupId
+                    }
+                }
+            })
+
+            return res.json({
+                status: 200,
+                data: users
+            })
+
+        } catch (error) {
+            
+        }
+    }
+
 }

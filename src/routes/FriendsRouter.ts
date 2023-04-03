@@ -19,6 +19,7 @@ export class FriendsRouter {
     getRoutes() {
         this.router.get('/list/friends',GlobalMiddleware.checkError, GlobalMiddleware.authenticate, FriendsController.listFriends)
         this.router.get('/list/group', GlobalMiddleware.checkError, GlobalMiddleware.authenticate, FriendsController.listGroups);
+        this.router.get('/list/group/members', FriendsValidator.listGroupMembers() ,GlobalMiddleware.checkError, GlobalMiddleware.authenticate, FriendsController.listGroupMembers);
         this.router.get('/invite/to/app',FriendsValidator.inviteToApp() ,GlobalMiddleware.checkError, GlobalMiddleware.authenticate, FriendsController.inviteToApp)
     }
 

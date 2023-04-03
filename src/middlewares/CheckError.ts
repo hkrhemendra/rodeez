@@ -3,6 +3,7 @@ import { getEnvironmentVariables } from "../environments/env";
 import * as jwt from 'jsonwebtoken';
 import { AppDataSource } from "../data-source";
 import { User } from "../entity/User";
+import { query } from "express";
 
 
 export class GlobalMiddleware{
@@ -67,4 +68,5 @@ export class GlobalMiddleware{
             next(e)
         }
     }
+
 }

@@ -102,6 +102,24 @@ export class FriendsValidator{
                 .isNumeric()
         ]
     }
+
+    static listGroupMembers(){
+        let groupRepository = AppDataSource.getRepository(Group);
+
+        return query('group_id', 'Please enter group id')
+            .isNumeric()
+                .custom(async(group_id, {req})=> {
+                    return await groupRepository.findOneBy({
+                        id: group_id
+                    }).then((group)=> {
+                        if(group){
+                            return true
+                        }else {
+                            return new Error("Please enter valid group ida")
+                        }
+                    })
+                })
+    }
    
 
 }
