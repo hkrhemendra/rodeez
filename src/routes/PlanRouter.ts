@@ -16,6 +16,9 @@ export class PlanRouter {
     }
 
     getRoutes() {
+        this.router.get('/get/user/plan', GlobalMiddleware.authenticate, PlanController.getTask)
+        this.router.get('/get/event', PlanValidator.getEvent(), GlobalMiddleware.checkError, GlobalMiddleware.authenticate, PlanController.getTask)
+        this.router.get('/get/task', PlanValidator.getTask(), GlobalMiddleware.checkError, GlobalMiddleware.authenticate, PlanController.getTask)
     }
 
      postRoutes() {

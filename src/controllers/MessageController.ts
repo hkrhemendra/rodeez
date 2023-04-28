@@ -92,6 +92,7 @@ export class MessageController{
         const id = req.query.id
         const user_id = req.user.user_id
         try {
+            console.log(user_id);
             const userRepository = AppDataSource.getRepository(User)
             const messageRepository = AppDataSource.getRepository(Messages)
 

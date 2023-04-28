@@ -104,4 +104,43 @@ export class PlanValidator {
         ]
     }
 
+    static getTask(){
+        const planRepository = AppDataSource.getRepository(Plan)
+        return [
+            query('plan_id', "Please enter valid group id")
+                .isNumeric()
+                    .custom(async(plan_id, {req}) => {
+                        return await planRepository.findOneBy({
+                            id: plan_id
+                        }).then((plan) => {
+                            if(plan){
+                                return true
+                            }else{
+                                return new Error('Invalid plan id')
+                            }
+                        })
+                    })
+        ]
+    }
+
+    static getEvent(){
+        const planRepository = AppDataSource.getRepository(Plan)
+        return [
+            query('plan_id', "Please enter valid group id")
+                .isNumeric()
+                    .custom(async(plan_id, {req}) => {
+                        return await planRepository.findOneBy({
+                            id: plan_id
+                        }).then((plan) => {
+                            if(plan){
+                                return true
+                            }else{
+                                return new Error('Invalid plan id')
+                            }
+                        })
+                    })
+        ]
+    }
+
+
 }

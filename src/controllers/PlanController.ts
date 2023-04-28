@@ -155,5 +155,86 @@ export class PlanController {
 
     }
 
+    static async getUserPlan(req, res, next) {
+
+        const userId = req.user.user_id
+        const planRepository = AppDataSource.getRepository(Plan)
+
+        try{
+
+            const plans = await planRepository.find({
+                where: {
+                    users: {
+                        id: userId
+                    }
+                }
+            })
+
+            return res.json({
+                status: 200,
+                data: plans
+            })
+
+        }catch(error) {
+            console.log(error)
+            next(error)
+        }
+
+    }
+
+    static async getTask(req, res, next) {
+
+        const planId = req.query.plan_id
+        const taskRepository = AppDataSource.getRepository(Task)
+
+        try{
+
+            const tasks = await taskRepository.find({
+                where: {
+                    plan: {
+                        id: planId
+                    }
+                }
+            })
+
+            return res.json({
+                status: 200,
+                data: tasks
+            })
+
+        }catch(error) {
+            console.log(error)
+            next(error)
+        }
+
+    }
+
+    static async getEvent(req, res, next) {
+
+        const planId = req.query.plan_id
+        const eventRepository = AppDataSource.getRepository(Event)
+
+        try{
+
+            const events = await eventRepository.find({
+                where: {
+                    plan: {
+                        id: planId
+                    }
+                }
+            })
+
+            return res.json({
+                status: 200,
+                data: events
+            })
+
+        }catch(error) {
+            console.log(error)
+            next(error)
+        }
+
+    }
+
 }
 
